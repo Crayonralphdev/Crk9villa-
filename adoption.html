@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pet Adoption — CR.K9 Villa</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #1a3a5c; --steel: #2e6898; --sky: #4a90c4;
+      --light-blue: #d6eaf8; --gold: #c8a84b; --white: #ffffff;
+      --off-white: #f7fafd; --gray: #6b7a8d; --dark: #1a2535;
+      --shadow: 0 8px 32px rgba(26,58,92,0.12); --radius: 14px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lato', sans-serif; background: var(--off-white); color: var(--dark); }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.96); backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--light-blue);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px;
+      box-shadow: 0 2px 20px rgba(26,58,92,0.09);
+    }
+    .nav-logo img { height: 52px; object-fit: contain; }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--navy); color: #fff;
+      padding: 9px 22px; border-radius: 30px;
+      font-weight: 700; font-size: .9rem; text-decoration: none;
+      transition: background .3s;
+    }
+    .nav-back:hover { background: var(--steel); }
+
+    /* HERO */
+    .adopt-hero {
+      min-height: 38vh;
+      background: linear-gradient(135deg, #1a3a5c 0%, #2e6898 60%, #4a90c4 100%);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 100px 5% 60px;
+      position: relative; overflow: hidden;
+    }
+    .adopt-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1400&q=60') center/cover no-repeat;
+      opacity: .12;
+    }
+    .adopt-hero-content { position: relative; z-index: 1; }
+    .adopt-hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.15); color: #a8cceb;
+      font-size: .78rem; font-weight: 800; letter-spacing: .1em;
+      padding: 6px 18px; border-radius: 30px; margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .adopt-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: #fff; line-height: 1.15; margin-bottom: 14px;
+    }
+    .adopt-hero p { color: #b0d0e8; font-size: 1.05rem; max-width: 560px; margin: 0 auto; }
+
+    /* MAIN */
+    main { max-width: 720px; margin: 0 auto; padding: 60px 24px 80px; }
+
+    .step-bar {
+      display: flex; gap: 0; margin-bottom: 44px; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(26,58,92,0.1);
+    }
+    .step {
+      flex: 1; padding: 14px 10px; text-align: center; background: #e8f0f8;
+      font-size: .78rem; font-weight: 700; color: var(--gray); letter-spacing: .04em;
+      transition: all .3s; border-right: 1px solid #ccdaea;
+    }
+    .step:last-child { border-right: none; }
+    .step.active { background: var(--navy); color: #fff; }
+    .step.done { background: var(--steel); color: #fff; }
+    .step i { display: block; font-size: 1rem; margin-bottom: 4px; }
+
+    .form-card {
+      background: var(--white); border-radius: 22px; padding: 40px;
+      box-shadow: var(--shadow); margin-bottom: 24px;
+    }
+    .form-card h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: 6px; }
+    .form-card .card-sub { color: var(--gray); font-size: .9rem; margin-bottom: 28px; line-height: 1.6; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block; font-size: .8rem; font-weight: 700; color: var(--navy);
+      letter-spacing: .06em; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 13px 16px; border: 1.5px solid #dde6f0;
+      border-radius: 11px; font-family: 'Lato', sans-serif;
+      font-size: .92rem; color: var(--dark); background: var(--off-white);
+      transition: border-color .25s, box-shadow .25s; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--steel); box-shadow: 0 0 0 3px rgba(46,104,152,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+    .pet-picker { display: flex; gap: 14px; margin-top: 6px; }
+    .pet-pick-card {
+      flex: 1; border: 2px solid #dde6f0; border-radius: 14px; padding: 18px;
+      text-align: center; cursor: pointer; transition: all .25s; background: var(--off-white);
+    }
+    .pet-pick-card:hover { border-color: var(--steel); background: var(--light-blue); }
+    .pet-pick-card.selected { border-color: var(--steel); background: var(--light-blue); box-shadow: 0 4px 16px rgba(46,104,152,0.15); }
+    .pet-pick-card i { font-size: 2rem; color: var(--navy); display: block; margin-bottom: 8px; }
+    .pet-pick-card span { font-weight: 700; color: var(--navy); font-size: .92rem; }
+
+    .radio-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+    .radio-pill {
+      padding: 9px 18px; border: 1.5px solid #dde6f0; border-radius: 30px;
+      cursor: pointer; font-size: .87rem; font-weight: 600; color: var(--navy);
+      background: var(--off-white); transition: all .2s; user-select: none;
+    }
+    .radio-pill:hover { border-color: var(--steel); }
+    .radio-pill.selected { border-color: var(--steel); background: var(--light-blue); color: var(--navy); }
+
+    .submit-btn {
+      width: 100%; padding: 15px; background: var(--navy); color: #fff;
+      border: none; border-radius: 40px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; font-family: 'Lato', sans-serif;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: background .3s, transform .25s; margin-top: 8px;
+    }
+    .submit-btn:hover { background: var(--steel); transform: translateY(-2px); }
+
+    .success-box {
+      display: none; background: #eafaf1; border: 2px solid #27ae60;
+      border-radius: 18px; padding: 40px; text-align: center;
+      animation: fadeUp .5s ease both;
+    }
+    .success-box i { font-size: 3rem; color: #27ae60; margin-bottom: 16px; display: block; }
+    .success-box h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--navy); margin-bottom: 10px; }
+    .success-box p { color: var(--gray); line-height: 1.7; }
+    .success-box .wa-follow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #25d366; color: #fff; padding: 12px 26px;
+      border-radius: 30px; text-decoration: none; font-weight: 700;
+      margin-top: 22px; transition: background .25s;
+    }
+    .success-box .wa-follow:hover { background: #1fb357; }
+
+    .note-box {
+      background: var(--light-blue); border-radius: 12px; padding: 16px 20px;
+      display: flex; gap: 12px; align-items: flex-start; margin-bottom: 28px;
+    }
+    .note-box i { color: var(--steel); margin-top: 2px; flex-shrink: 0; }
+    .note-box p { color: var(--navy); font-size: .87rem; line-height: 1.6; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+    footer.mini {
+      background: var(--dark); color: #6b8a9e; text-align: center;
+      padding: 22px; font-size: .82rem;
+    }
+    footer.mini a { color: var(--sky); text-decoration: none; font-weight: 700; }
+
+    @media(max-width:600px){
+      .form-row { grid-template-columns: 1fr; }
+      .form-card { padding: 28px 20px; }
+      main { padding: 50px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><img src="images/logo.png" alt="CR.K9 Villa"/></div>
+  <a href="index.html" class="nav-back"><i class="fas fa-arrow-left"></i> Back to Home</a>
+</nav>
+
+<!-- HERO -->
+<div class="adopt-hero">
+  <div class="adopt-hero-content">
+    <div class="adopt-hero-badge"><i class="fas fa-paw"></i> Pet Adoption</div>
+    <h1>Find Your Perfect<br/>Companion</h1>
+    <p>Fill in the form below and we'll match you with the right pet. All our animals are healthy, vaccinated, and ready for a loving home.</p>
+  </div>
+</div>
+
+<main>
+
+  <!-- STEP BAR -->
+  <div class="step-bar">
+    <div class="step active" id="step1Ind"><i class="fas fa-user"></i>Your Info</div>
+    <div class="step" id="step2Ind"><i class="fas fa-paw"></i>Pet Details</div>
+    <div class="step" id="step3Ind"><i class="fas fa-check"></i>Submit</div>
+  </div>
+
+  <!-- FORM -->
+  <div id="adoptionForm">
+
+    <!-- STEP 1 — Personal Info -->
+    <div id="step1" class="form-card">
+      <h2>Your Information</h2>
+      <p class="card-sub">Tell us a little about yourself so we can get back to you quickly.</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" id="adFirstName" placeholder="John" required/>
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" id="adLastName" placeholder="Doe" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address *</label>
+        <input type="email" id="adEmail" placeholder="you@example.com" required/>
+      </div>
+      <div class="form-group">
+        <label>Phone / WhatsApp *</label>
+        <input type="tel" id="adPhone" placeholder="+234 XXX XXX XXXX" required/>
+      </div>
+      <div class="form-group">
+        <label>Home Address *</label>
+        <input type="text" id="adAddress" placeholder="Street, City, State" required/>
+      </div>
+    </div>
+
+    <!-- STEP 2 — Pet Preferences -->
+    <div id="step2" class="form-card">
+      <h2>Pet Preferences</h2>
+      <p class="card-sub">Help us find the perfect match for your lifestyle.</p>
+
+      <div class="form-group">
+        <label>Type of Pet *</label>
+        <div class="pet-picker">
+          <div class="pet-pick-card" id="pickDog" onclick="selectPet('dog')">
+            <i class="fas fa-dog"></i>
+            <span>Dog</span>
+          </div>
+          <div class="pet-pick-card" id="pickCat" onclick="selectPet('cat')">
+            <i class="fas fa-cat"></i>
+            <span>Cat</span>
+          </div>
+        </div>
+        <input type="hidden" id="adPetType" value=""/>
+      </div>
+
+      <div class="form-group" id="breedGroup">
+        <label>Preferred Breed <span style="font-weight:400;color:var(--gray);text-transform:none">(optional)</span></label>
+        <input type="text" id="adBreed" placeholder="e.g. German Shepherd, Rottweiler, Mixed breed..."/>
+      </div>
+
+      <div class="form-group">
+        <label>Preferred Age Group *</label>
+        <div class="radio-row" id="ageGroup">
+          <div class="radio-pill" onclick="selectPill(this,'ageGroup')">🐾 Pup (0–6 months)</div>
+          <div class="radio-pill" onclick="selectPill(this,'ageGroup')">🐕 Adolescent (6–18 months)</div>
+          <div class="radio-pill" onclick="selectPill(this,'ageGroup')">🦮 Adult (18 months+)</div>
+          <div class="radio-pill" onclick="selectPill(this,'ageGroup')">No Preference</div>
+        </div>
+        <input type="hidden" id="adAgeGroup" value=""/>
+      </div>
+
+      <div class="form-group">
+        <label>Preferred Sex *</label>
+        <div class="radio-row" id="sexGroup">
+          <div class="radio-pill" onclick="selectPill(this,'sexGroup')">♂ Male</div>
+          <div class="radio-pill" onclick="selectPill(this,'sexGroup')">♀ Female</div>
+          <div class="radio-pill" onclick="selectPill(this,'sexGroup')">No Preference</div>
+        </div>
+        <input type="hidden" id="adSex" value=""/>
+      </div>
+
+      <div class="form-group">
+        <label>Additional Notes <span style="font-weight:400;color:var(--gray);text-transform:none">(optional)</span></label>
+        <textarea id="adNotes" placeholder="Tell us about your living situation, family, other pets, what you're looking for in a companion..."></textarea>
+      </div>
+    </div>
+
+    <!-- NOTE -->
+    <div class="note-box">
+      <i class="fas fa-info-circle"></i>
+      <p>After submitting, our team will review your application and contact you within <strong>24–48 hours</strong> to discuss available pets and arrange a meeting. All adoptions require an in-person visit to our facility.</p>
+    </div>
+
+    <button class="submit-btn" id="adoptSubmitBtn" onclick="submitAdoption(this)">
+      <i class="fas fa-paw"></i> Submit Adoption Application
+    </button>
+
+  </div>
+
+  <!-- SUCCESS MESSAGE -->
+  <div class="success-box" id="successBox">
+    <i class="fas fa-circle-check"></i>
+    <h3>Application Submitted! 🐾</h3>
+    <p>Thank you for choosing to adopt from CR.K9 Villa. We have received your application and will contact you within <strong>24–48 hours</strong> to discuss your perfect pet match and schedule a visit.</p>
+    <a href="https://wa.me/2349069770760?text=Hi%20CR.K9%20Villa!%20I%20just%20submitted%20a%20pet%20adoption%20application.%20Looking%20forward%20to%20hearing%20from%20you!" target="_blank" class="wa-follow">
+      <i class="fab fa-whatsapp"></i> Follow Up on WhatsApp
+    </a>
+  </div>
+
+</main>
+
+<footer class="mini">
+  <p>© 2025 CR.K9 Villa &nbsp;|&nbsp; <a href="index.html">Back to Home</a> &nbsp;|&nbsp; Created by <a href="#">CRA-Tech</a></p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("wInbUzdXsCaW7bMEW");
+
+  var selectedPet = '';
+  var selectedAge = '';
+  var selectedSex = '';
+
+  // Step indicator update
+  function updateSteps(){
+    var s1 = document.getElementById('step1Ind');
+    var s2 = document.getElementById('step2Ind');
+    var s3 = document.getElementById('step3Ind');
+    var f1 = document.getElementById('adFirstName').value.trim();
+    var f2 = document.getElementById('adEmail').value.trim();
+    var f3 = document.getElementById('adPhone').value.trim();
+    if(f1 && f2 && f3){
+      s1.className = 'step done'; s2.className = 'step active';
+    } else {
+      s1.className = 'step active'; s2.className = 'step';
+    }
+    if(selectedPet && selectedAge && selectedSex){
+      s2.className = 'step done'; s3.className = 'step active';
+    }
+  }
+  document.querySelectorAll('input,select,textarea').forEach(function(el){
+    el.addEventListener('input', updateSteps);
+  });
+
+  function selectPet(type){
+    selectedPet = type;
+    document.getElementById('adPetType').value = type;
+    document.getElementById('pickDog').classList.toggle('selected', type === 'dog');
+    document.getElementById('pickCat').classList.toggle('selected', type === 'cat');
+    updateSteps();
+  }
+
+  function selectPill(el, groupId){
+    var group = document.getElementById(groupId);
+    group.querySelectorAll('.radio-pill').forEach(function(p){ p.classList.remove('selected'); });
+    el.classList.add('selected');
+    if(groupId === 'ageGroup') {
+      selectedAge = el.textContent.replace(/[🐾🐕🦮]/g,'').trim();
+      document.getElementById('adAgeGroup').value = selectedAge;
+    }
+    if(groupId === 'sexGroup') {
+      selectedSex = el.textContent.replace(/[♂♀]/g,'').trim();
+      document.getElementById('adSex').value = selectedSex;
+    }
+    updateSteps();
+  }
+
+  function submitAdoption(btn){
+    var firstName = document.getElementById('adFirstName').value.trim();
+    var lastName  = document.getElementById('adLastName').value.trim();
+    var email     = document.getElementById('adEmail').value.trim();
+    var phone     = document.getElementById('adPhone').value.trim();
+    var address   = document.getElementById('adAddress').value.trim();
+    var petType   = document.getElementById('adPetType').value;
+    var breed     = document.getElementById('adBreed').value.trim();
+    var ageGroup  = document.getElementById('adAgeGroup').value;
+    var sex       = document.getElementById('adSex').value;
+    var notes     = document.getElementById('adNotes').value.trim();
+
+    if(!firstName || !email || !phone || !address){
+      showToast('Please fill in your name, email, phone, and address.', 'error'); return;
+    }
+    if(!petType){ showToast('Please select a pet type (Dog or Cat).', 'error'); return; }
+    if(!ageGroup){ showToast('Please select an age group preference.', 'error'); return; }
+    if(!sex){ showToast('Please select a sex preference.', 'error'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+    var msgBody = 'Pet Type: ' + petType.charAt(0).toUpperCase() + petType.slice(1) + '\n' +
+      'Preferred Breed: ' + (breed || 'No preference') + '\n' +
+      'Age Group: ' + ageGroup + '\n' +
+      'Sex: ' + sex + '\n' +
+      'Address: ' + address + '\n\n' +
+      'Additional Notes:\n' + (notes || 'None provided.');
+
+    emailjs.send('service_i5j0zpa', 'template_6apqewq', {
+      from_name : firstName + ' ' + lastName,
+      phone     : phone,
+      program   : 'Pet Adoption Application — ' + petType.charAt(0).toUpperCase() + petType.slice(1),
+      message   : 'Email: ' + email + '\n\n' + msgBody
+    }).then(function(){
+      document.getElementById('adoptionForm').style.display = 'none';
+      document.getElementById('successBox').style.display = 'block';
+      document.querySelector('.step-bar').querySelectorAll('.step').forEach(function(s){ s.className = 'step done'; });
+    }, function(err){
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paw"></i> Submit Adoption Application';
+      showToast('Failed to submit. Please WhatsApp us directly on +234 906 977 0760', 'error');
+    });
+  }
+
+  function showToast(msg, type){
+    var existing = document.querySelector('.crk9-toast');
+    if(existing) existing.remove();
+    var t = document.createElement('div');
+    t.className = 'crk9-toast';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;' +
+      'background:' + (type === 'success' ? '#27ae60' : '#e74c3c') + ';color:#fff;' +
+      'padding:14px 22px;border-radius:12px;font-weight:700;font-size:.88rem;' +
+      'box-shadow:0 6px 24px rgba(0,0,0,0.25);max-width:300px;line-height:1.6;';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function(){ if(t) t.remove(); }, 5500);
+  }
+</script>
+</body>
+</html>
